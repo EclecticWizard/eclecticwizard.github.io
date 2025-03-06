@@ -1,0 +1,19 @@
+    html {
+        padding: 0;
+        margin: 0;
+        background-color: #1f2933;
+    }
+    body {
+        padding: 10;
+        margin: 10;
+        font-family: helvetica;
+        background-color: #1f2933;
+        color: white;
+    }
+    a {
+       color: #87ceeb;
+    }
+    li.banner {
+       display: inline;
+       margin-right: 15px;
+    }
