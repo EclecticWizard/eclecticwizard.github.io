@@ -17,6 +17,6 @@
        display: inline;
        margin-right: 15px;
     }
-    div.badges{
-       background-color: #D1D1D9;
+    .badges{
+       background-color: #111111 !important;
     }
