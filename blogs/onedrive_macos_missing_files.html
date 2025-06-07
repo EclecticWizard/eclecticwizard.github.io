@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2025-06-07 Sat 19:14 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OneDrive MacOS Missing Files</title>
+<meta name="author" content="Jack Hodgkins" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" href="https://eclecticwizard.github.io/style.css"/>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">OneDrive MacOS Missing Files</h1>
+<p>
+Had an interesting error at work the other day where someone called in to say their Desktop and Documents folders on their MacBook had disappeared resulting in over a decade's worth of work vanishing to the ether. Naturally, we checked the Recycle Bin but this was empty and the user's home area had no Desktop or Documents folders to speak of. What it did have, however, were two broken OneDrive aliases.
+</p>
+<div id="outline-container-org9f52a29" class="outline-2">
+<h2 id="org9f52a29">How Does OneDrive Work On a Mac?</h2>
+<div class="outline-text-2" id="text-org9f52a29">
+<p>
+So the client who phoned in with the issue had made a smart move and turned on the option to sync their Desktop and Documents folders with OneDrive to keep a backup and have the files available on their other devices assuming, as any sane person would, that this wouldn't affect his local files. Unfortunately, it doesn't seem like Apple or Microsoft are sane, at least in how they handle OneDrive for Mac users. 
+</p>
+
+<p>
+So the second you allow OneDrive to sync your Desktop and Documents these folders are emptied and hidden (you can see the empty folders by opening your terminal and using <code>ls -a</code> on your home area). Admittedly, this may not be entirely Microsoft's doing as iCloud will do the same given the opportunity. OneDrive will then spit out two aliases (in a roundabout way) point to the new location of your Desktop and Documents, so for all intents and purposes, your files appear to be where you left them. The new home for your files will be either:
+</p>
+<ul class="org-ul">
+<li><code>~/Library/Group Containers/xxxxxxOneDriveSyncClientSuite</code> for files in a workplace or academic institute provided OneDrive</li>
+<li><code>~/Library/Group Containers/xxxxxxOneDriveStandaloneSuite</code> for files in your personal account's OneDrive
+<ul class="org-ul">
+<li><code>xxxxxx</code> is a string of characters, not too sure what they denote but they are likely to different for each user.</li>
+</ul></li>
+</ul>
+
+<p>
+At each location will be one or more <code>OneDrive.noindex</code> folders; <code>.noindex</code> meaning files and folders with the location aren't searchable via Spotlight. Great&#x2026;
+</p>
+
+<p>
+Thankfully, when OneDrive is removed it doesn't delete the files it has access to, they still exist. But, if they are still there, why do the aliases break?
+</p>
+
+<p>
+That's simple! The aliases don't point to your OneDrive files, they point to a mounted drive in the <code>CloudStorage</code> folder. This in turn points to your OneDrive files. It’s a curious decision and someone probably thought that it makes the files more secure for a user to only access the indirectly, but provably it also adds unneeded complications. It's been a while since I played around with OneDrive on Windows but, if memory serves, when OneDrive is removed your files are returned and if not, the OneDrive folder is in your home area so nothing really goes missing. It's definitely a quirk of the Mac that prevents OneDrive keeping all it's files viewable in the home area, you'll find that most cloud storage providers do the same, Dropbox, Google Drive, even Proton Drive; but why can't cloud storage providers just provide direct aliases for the stored files to the user's home are? Seriously, why not? I've created my own manually and nothing prevented me from doing so. I can only chalk it up to a security choice at the expense of user experience.
+</p>
+</div>
+</div>
+<div id="outline-container-orgd720856" class="outline-2">
+<h2 id="orgd720856">Why Did the Caller's OneDrive Aliases Break?</h2>
+<div class="outline-text-2" id="text-orgd720856">
+<p>
+This is all speculation, but it looks like their OneDrive updated to a later version and they were using a pre-Apple Silicon MacBook. Later versions of OneDrive seem to only support the ARM based Apple devices (M1 models and above) so the updated version simply couldn't run on the older MacBook and promptly died, offloading the mounted drive and leaving the non-techy caller with no way of finding their files.
+</p>
+
+<p>
+After finding where the files were kept, I copied them directly to the caller's home area so that there was a copy available and visible. The caller then went out and bought a new MacBook, so had to spend at least £800 in order to carry on using their OneDrive subscription. The worst part being that OneDrive seemed to have stopped syncing or even saving files long before the crash that lead to the phonecall as the user reported that, while most of their data was recovered, many of their recently worked on files were nowhere to be seen. I confirmed this by checking the files I'd copied out as well as the files in the original OneDrive location.
+</p>
+</div>
+</div>
+<div id="outline-container-org43e82dd" class="outline-2">
+<h2 id="org43e82dd">OneDrive Discovery Script</h2>
+<div class="outline-text-2" id="text-org43e82dd">
+<p>
+In light of this, I've cobbled together a shell script that can discover OneDrive files hidden away in the Mac's <code>Group Containers</code> folder. It's pretty simple and will save you the hassle of navigating through to the folders where you can find any orphaned files from previous OneDrive files and can even create working links to each discovered area or copy the files out.
+</p>
+
+<p>
+The script can be found <a href="https://github.com/EclecticWizard/Apothecarium-Mechanicus/blob/master/onedrive/onedrive_discover.sh">here</a>. If you have any suggestions, please let me know by raising a GitHub issue. Hopefully it will save you some time cut some stress if you find yourself in a similar predicament to our caller. Feel free to adapt it for your own needs too.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Jack Hodgkins</p>
+<p class="date">Created: 2025-06-07 Sat 19:14</p>
+</div>
+</body>
+</html>
